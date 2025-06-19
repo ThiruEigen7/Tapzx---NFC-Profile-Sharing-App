@@ -1,30 +1,33 @@
-import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  Animated,
-  Dimensions,
+  View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
-const SignInScreen = () => {
-  const [email, setEmail] = useState('Loisbecket@gmail.com');
-  const [password, setPassword] = useState('password123');
+export default function SignInScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(50));
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -37,176 +40,208 @@ const SignInScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
   const handleSignIn = () => {
-    // Add your sign-in logic here
     console.log('Sign in pressed');
   };
 
   const handleGoogleSignIn = () => {
-    // Add Google sign-in logic here
     console.log('Google sign in pressed');
   };
 
   const handleFacebookSignIn = () => {
-    // Add Facebook sign-in logic here
     console.log('Facebook sign in pressed');
   };
 
+  const handleForgotPassword = () => {
+    console.log('Forgot password pressed');
+  };
+
+  const handleSignUp = () => {
+    router.push('/components/SignUp');
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <Animated.View
-          style={[
-            styles.content,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
+    <View style={styles.container}>
+      <StatusBar style="dark" backgroundColor="#FAFAFA" />
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
         >
-          {/* Logo */}
-          <View style={styles.logoContainer}>
-            <LinearGradient
-              colors={['#4F46E5', '#7C3AED']}
-              style={styles.logoGradient}
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Animated.View
+              style={[
+                styles.content,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
             >
-              <Ionicons name="shield-checkmark" size={32} color="white" />
-            </LinearGradient>
-          </View>
-
-          {/* Title */}
-          <Text style={styles.title}>Sign in to your Account</Text>
-
-          {/* Email Input */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              placeholderTextColor="#9CA3AF"
-            />
-          </View>
-
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              placeholderTextColor="#9CA3AF"
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? 'eye-off' : 'eye'}
-                size={20}
-                color="#9CA3AF"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* Remember Me & Forgot Password */}
-          <View style={styles.optionsRow}>
-            <TouchableOpacity
-              style={styles.rememberMeContainer}
-              onPress={() => setRememberMe(!rememberMe)}
-            >
-              <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                {rememberMe && (
-                  <Ionicons name="checkmark" size={12} color="white" />
-                )}
+              {/* Logo */}
+              <View style={styles.logoContainer}>
+                <LinearGradient
+                  colors={['#4F46E5', '#7C3AED']}
+                  style={styles.logoGradient}
+                >
+                  <Ionicons name="shield-checkmark" size={32} color="white" />
+                </LinearGradient>
               </View>
-              <Text style={styles.rememberMeText}>Remember me</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
 
-          {/* Sign In Button */}
-          <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-            <LinearGradient
-              colors={['#4F46E5', '#3B82F6']}
-              style={styles.signInGradient}
-            >
-              <Text style={styles.signInButtonText}>Log In</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+              {/* Title */}
+              <Text style={styles.title}>Sign in to your{'\n'}Account</Text>
 
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>Or</Text>
-            <View style={styles.dividerLine} />
-          </View>
+              {/* Email Input */}
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
 
-          {/* Social Sign In Buttons */}
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={handleGoogleSignIn}
-          >
-            <Ionicons name="logo-google" size={20} color="#DB4437" />
-            <Text style={styles.socialButtonText}>Continue with Google</Text>
-          </TouchableOpacity>
+              {/* Password Input */}
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoComplete="password"
+                  placeholderTextColor="#9CA3AF"
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={20}
+                    color="#9CA3AF"
+                  />
+                </TouchableOpacity>
+              </View>
 
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={handleFacebookSignIn}
-          >
-            <Ionicons name="logo-facebook" size={20} color="#4267B2" />
-            <Text style={styles.socialButtonText}>Continue with Facebook</Text>
-          </TouchableOpacity>
+              {/* Remember Me & Forgot Password */}
+              <View style={styles.optionsRow}>
+                <TouchableOpacity
+                  style={styles.rememberMeContainer}
+                  onPress={() => setRememberMe(!rememberMe)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                    {rememberMe && (
+                      <Ionicons name="checkmark" size={12} color="white" />
+                    )}
+                  </View>
+                  <Text style={styles.rememberMeText}>Remember me</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleForgotPassword} activeOpacity={0.7}>
+                  <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </View>
 
-          {/* Sign Up Link */}
-          <View style={styles.signUpContainer}>
-            <Text style={styles.signUpText}>Don't have an account? </Text>
-            <TouchableOpacity>
-              <Text style={styles.signUpLink}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
+              {/* Sign In Button */}
+              <TouchableOpacity 
+                style={styles.signInButton} 
+                onPress={handleSignIn}
+                activeOpacity={0.9}
+              >
+                <LinearGradient
+                  colors={['#4F46E5', '#3B82F6']}
+                  style={styles.signInGradient}
+                >
+                  <Text style={styles.signInButtonText}>Log In</Text>
+                </LinearGradient>
+              </TouchableOpacity>
 
-          {/* Terms and Privacy */}
-          <View style={styles.termsContainer}>
-            <Text style={styles.termsText}>By signing in, you agree to our </Text>
-            <TouchableOpacity>
-              <Text style={styles.termsLink}>Terms of Service</Text>
-            </TouchableOpacity>
-            <Text style={styles.termsText}> & </Text>
-            <TouchableOpacity>
-              <Text style={styles.termsLink}>Privacy Policy</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>Or</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              {/* Social Sign In Buttons */}
+              <TouchableOpacity
+                style={styles.socialButton}
+                onPress={handleGoogleSignIn}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="logo-google" size={20} color="#DB4437" />
+                <Text style={styles.socialButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.socialButton}
+                onPress={handleFacebookSignIn}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="logo-facebook" size={20} color="#4267B2" />
+                <Text style={styles.socialButtonText}>Continue with Facebook</Text>
+              </TouchableOpacity>
+
+              {/* Sign Up Link */}
+              <View style={styles.signUpContainer}>
+                <Text style={styles.signUpText}>Don't have an account? </Text>
+                <TouchableOpacity onPress={handleSignUp} activeOpacity={0.7}>
+                  <Text style={styles.signUpLink}>Sign Up</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Terms and Privacy */}
+              <View style={styles.termsContainer}>
+                <Text style={styles.termsText}>By signing in, you agree to our </Text>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Text style={styles.termsLink}>Terms of Service</Text>
+                </TouchableOpacity>
+                <Text style={styles.termsText}> & </Text>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Text style={styles.termsLink}>Privacy Policy</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
+  safeArea: {
+    flex: 1,
+  },
   keyboardView: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 60,
-    paddingBottom: 20,
+    justifyContent: 'center',
+    minHeight: height * 0.8,
   },
   logoContainer: {
     alignItems: 'center',
@@ -234,6 +269,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 40,
     letterSpacing: -0.5,
+    lineHeight: 34,
   },
   inputContainer: {
     marginBottom: 20,
@@ -264,6 +300,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     top: 18,
+    padding: 2,
   },
   optionsRow: {
     flexDirection: 'row',
@@ -395,5 +432,3 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
-export default SignInScreen;
