@@ -1,18 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import LoginScreen from "./components/SignIn"
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Home</Text>
-    </View>
-  );
+export default function Page() {
+  return <LoginScreen />
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    color:'#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
