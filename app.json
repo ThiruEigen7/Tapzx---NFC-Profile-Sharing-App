@@ -1,42 +1,40 @@
 {
   "expo": {
-    "name": "tapzx",
-    "slug": "tapzx",
+    "name": "Tapzx",
+    "slug": "tapzx-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "tapzx",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to camera to take profile pictures.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select profile pictures."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F172A"
       },
-      "edgeToEdgeEnabled": true
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+    "scheme": "tapzx",
+    "plugins": ["expo-router"]
   }
 }

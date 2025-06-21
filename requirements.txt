@@ -1,0 +1,14 @@
+# Install Expo Image Picker
+npx expo install expo-image-picker
+
+# Install Expo Linear Gradient
+npx expo install expo-linear-gradient
+
+# Install Expo Router (for navigation)
+npx expo install expo-router
+
+# Install Expo Status Bar
+npx expo install expo-status-bar
+
+# Install React Native Vector Icons (Ionicons)
+npx expo install @expo/vector-icons

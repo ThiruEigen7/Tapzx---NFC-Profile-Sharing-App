@@ -1,8 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+"use client"
+
+import { Ionicons } from "@expo/vector-icons"
+import { LinearGradient } from "expo-linear-gradient"
+import { router } from "expo-router"
+import { StatusBar } from "expo-status-bar"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   Alert,
   Animated,
@@ -15,127 +17,136 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native"
+import PlatformModal from "./PlatformModal"
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window")
 
 interface Platform {
-  id: string;
-  name: string;
-  icon: string;
-  category: 'essential' | 'social' | 'professional' | 'creative';
-  color: string;
-  placeholder?: string;
+  id: string
+  name: string
+  icon: string
+  category: "essential" | "social" | "professional" | "creative"
+  color: string
+  placeholder?: string
+}
+
+interface PlatformData {
+  id: string
+  name: string
+  value: string
 }
 
 const platforms: Platform[] = [
-  { 
-    id: 'website', 
-    name: 'Website', 
-    icon: 'globe-outline', 
-    category: 'essential', 
-    color: '#4F46E5',
-    placeholder: 'https://yourwebsite.com'
+  {
+    id: "website",
+    name: "Website",
+    icon: "globe-outline",
+    category: "essential",
+    color: "#F59E0B",
+    placeholder: "https://yourwebsite.com",
   },
-  { 
-    id: 'email', 
-    name: 'Email', 
-    icon: 'mail-outline', 
-    category: 'essential', 
-    color: '#3B82F6',
-    placeholder: 'your@email.com'
+  {
+    id: "email",
+    name: "Email",
+    icon: "mail-outline",
+    category: "essential",
+    color: "#FBBF24",
+    placeholder: "your@email.com",
   },
-  { 
-    id: 'phone', 
-    name: 'Phone', 
-    icon: 'call-outline', 
-    category: 'essential', 
-    color: '#10B981',
-    placeholder: '+1 (555) 123-4567'
+  {
+    id: "phone",
+    name: "Phone",
+    icon: "call-outline",
+    category: "essential",
+    color: "#F59E0B",
+    placeholder: "+1 (555) 123-4567",
   },
-  { 
-    id: 'whatsapp', 
-    name: 'WhatsApp', 
-    icon: 'logo-whatsapp', 
-    category: 'essential', 
-    color: '#25D366',
-    placeholder: '+1 (555) 123-4567'
+  {
+    id: "whatsapp",
+    name: "WhatsApp",
+    icon: "logo-whatsapp",
+    category: "essential",
+    color: "#25D366",
+    placeholder: "+1 (555) 123-4567",
   },
-  { 
-    id: 'instagram', 
-    name: 'Instagram', 
-    icon: 'logo-instagram', 
-    category: 'social', 
-    color: '#E4405F',
-    placeholder: '@username'
+  {
+    id: "instagram",
+    name: "Instagram",
+    icon: "logo-instagram",
+    category: "social",
+    color: "#E4405F",
+    placeholder: "@username",
   },
-  { 
-    id: 'twitter', 
-    name: 'Twitter', 
-    icon: 'logo-twitter', 
-    category: 'social', 
-    color: '#1DA1F2',
-    placeholder: '@username'
+  {
+    id: "twitter",
+    name: "Twitter",
+    icon: "logo-twitter",
+    category: "social",
+    color: "#1DA1F2",
+    placeholder: "@username",
   },
-  { 
-    id: 'linkedin', 
-    name: 'LinkedIn', 
-    icon: 'logo-linkedin', 
-    category: 'professional', 
-    color: '#0077B5',
-    placeholder: 'linkedin.com/in/username'
+  {
+    id: "linkedin",
+    name: "LinkedIn",
+    icon: "logo-linkedin",
+    category: "professional",
+    color: "#0077B5",
+    placeholder: "linkedin.com/in/username",
   },
-  { 
-    id: 'facebook', 
-    name: 'Facebook', 
-    icon: 'logo-facebook', 
-    category: 'social', 
-    color: '#1877F2',
-    placeholder: 'facebook.com/username'
+  {
+    id: "facebook",
+    name: "Facebook",
+    icon: "logo-facebook",
+    category: "social",
+    color: "#1877F2",
+    placeholder: "facebook.com/username",
   },
-  { 
-    id: 'youtube', 
-    name: 'YouTube', 
-    icon: 'logo-youtube', 
-    category: 'creative', 
-    color: '#FF0000',
-    placeholder: 'youtube.com/@channel'
+  {
+    id: "youtube",
+    name: "YouTube",
+    icon: "logo-youtube",
+    category: "creative",
+    color: "#FF0000",
+    placeholder: "youtube.com/@channel",
   },
-  { 
-    id: 'tiktok', 
-    name: 'TikTok', 
-    icon: 'musical-notes-outline', 
-    category: 'social', 
-    color: '#000000',
-    placeholder: '@username'
+  {
+    id: "tiktok",
+    name: "TikTok",
+    icon: "musical-notes-outline",
+    category: "social",
+    color: "#000000",
+    placeholder: "@username",
   },
-  { 
-    id: 'github', 
-    name: 'GitHub', 
-    icon: 'logo-github', 
-    category: 'professional', 
-    color: '#333333',
-    placeholder: 'github.com/username'
+  {
+    id: "github",
+    name: "GitHub",
+    icon: "logo-github",
+    category: "professional",
+    color: "#333333",
+    placeholder: "github.com/username",
   },
-  { 
-    id: 'discord', 
-    name: 'Discord', 
-    icon: 'logo-discord', 
-    category: 'social', 
-    color: '#5865F2',
-    placeholder: 'discord.gg/invite'
+  {
+    id: "discord",
+    name: "Discord",
+    icon: "logo-discord",
+    category: "social",
+    color: "#5865F2",
+    placeholder: "discord.gg/invite",
   },
-];
+]
 
 export default function AddLinksScreen() {
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['website']);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformData[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null)
+
   // Animations
-  const [fadeAnim] = useState(new Animated.Value(0));
-  const [slideAnim] = useState(new Animated.Value(50));
-  const [progressAnim] = useState(new Animated.Value(0));
+  const [fadeAnim] = useState(new Animated.Value(0))
+  const [slideAnim] = useState(new Animated.Value(50))
+  const [progressAnim] = useState(new Animated.Value(0))
 
   useEffect(() => {
     Animated.parallel([
@@ -154,192 +165,161 @@ export default function AddLinksScreen() {
         duration: 1200,
         useNativeDriver: false,
       }),
-    ]).start();
-  }, []);
+    ]).start()
+  }, [])
 
   const handleGoBack = () => {
-    router.back();
-  };
+    router.back()
+  }
 
   const navigateToNextStep = useCallback(() => {
-    // Try multiple possible routes for the next step (Profile Setup - Step 3)
-    const possibleRoutes = [
-      '/(tabs)/profile-setup',  // Tab-based structure
-      '/profile-setup',         // Direct route
-      '/profile',               // Simple profile route
-      '/(onboarding)/profile',  // Onboarding flow
-      '/setup/profile',         // Setup flow
-      '/components/ProfilePage' // Your original route
-    ];
-
-    // Try to navigate to the first available route
     try {
-      // For now, let's use a more standard route structure
-      router.push('/components/ProfilePage');
+      router.push("/components/ProfilePage")
     } catch (error) {
-      console.log('Primary route failed, trying alternatives...');
-      
-      // If primary fails, try alternatives
-      const fallbackRoutes = [
-        '/profile',
-        '/(tabs)/profile',
-        '/components/ProfilePage'
-      ];
-      
-      let navigated = false;
-      for (const route of fallbackRoutes) {
-        try {
-          router.back();
-          navigated = true;
-          break;
-        } catch (err) {
-          console.log(`Route ${route} failed:`, err);
-        }
-      }
-      
-      if (!navigated) {
-        Alert.alert(
-          'Navigation Error',
-          'Unable to proceed to the next step. Please check your route configuration.',
-          [{ text: 'OK' }]
-        );
-      }
+      console.log("Navigation error:", error)
+      Alert.alert("Navigation Error", "Unable to proceed to the next step.", [{ text: "OK" }])
     }
-  }, []);
+  }, [])
 
   const handleSkip = () => {
-    Alert.alert(
-      'Skip This Step?',
-      'You can always add links later in your profile settings.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Skip', 
-          style: 'default',
-          onPress: navigateToNextStep
-        }
-      ]
-    );
-  }; 
+    Alert.alert("Skip This Step?", "You can always add links later in your profile settings.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Skip",
+        style: "default",
+        onPress: navigateToNextStep,
+      },
+    ])
+  }
 
   const handleContinue = async () => {
-    if (selectedPlatforms.length === 0) return;
-    
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call to save selected platforms
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Selected platforms:', selectedPlatforms);
-      
-      // Store selected platforms (you might want to use AsyncStorage or context here)
-      // await AsyncStorage.setItem('selectedPlatforms', JSON.stringify(selectedPlatforms));
-      
-      // Navigate to next step (Profile Setup - Step 3)
-      navigateToNextStep();
-      
-    } catch (error) {
-      console.error('Error saving platforms:', error);
-      Alert.alert(
-        'Error',
-        'Failed to save your preferences. Please try again.',
-        [{ text: 'OK' }]
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    if (selectedPlatforms.length === 0) return
 
-  const togglePlatform = useCallback((platformId: string) => {
-    setSelectedPlatforms(prev => 
-      prev.includes(platformId)
-        ? prev.filter(id => id !== platformId)
-        : [...prev, platformId]
-    );
-  }, []);
+    setIsLoading(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      console.log("Selected platforms:", selectedPlatforms)
+      navigateToNextStep()
+    } catch (error) {
+      console.error("Error saving platforms:", error)
+      Alert.alert("Error", "Failed to save your preferences. Please try again.", [{ text: "OK" }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handlePlatformPress = useCallback(
+    (platform: Platform) => {
+      const isSelected = selectedPlatforms.some((p) => p.id === platform.id)
+
+      if (isSelected) {
+        // Remove platform
+        setSelectedPlatforms((prev) => prev.filter((p) => p.id !== platform.id))
+      } else {
+        // Open modal to add platform details
+        setSelectedPlatform(platform)
+        setModalVisible(true)
+      }
+    },
+    [selectedPlatforms],
+  )
+
+  const handleModalSave = useCallback((platformId: string, data: { name: string; value: string }) => {
+    setSelectedPlatforms((prev) => [
+      ...prev.filter((p) => p.id !== platformId),
+      {
+        id: platformId,
+        name: data.name,
+        value: data.value,
+      },
+    ])
+    setModalVisible(false)
+    setSelectedPlatform(null)
+  }, [])
+
+  const handleModalClose = useCallback(() => {
+    setModalVisible(false)
+    setSelectedPlatform(null)
+  }, [])
 
   const clearSearch = useCallback(() => {
-    setSearchQuery('');
-  }, []);
+    setSearchQuery("")
+  }, [])
 
-  // Memoized filtered platforms for performance
-  const filteredPlatforms = useMemo(() => 
-    platforms.filter(platform =>
-      platform.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ), [searchQuery]
-  );
+  const filteredPlatforms = useMemo(
+    () => platforms.filter((platform) => platform.name.toLowerCase().includes(searchQuery.toLowerCase())),
+    [searchQuery],
+  )
 
-  // Group platforms by category
   const platformsByCategory = useMemo(() => {
-    const grouped = filteredPlatforms.reduce((acc, platform) => {
-      if (!acc[platform.category]) {
-        acc[platform.category] = [];
-      }
-      acc[platform.category].push(platform);
-      return acc;
-    }, {} as Record<string, Platform[]>);
+    const grouped = filteredPlatforms.reduce(
+      (acc, platform) => {
+        if (!acc[platform.category]) {
+          acc[platform.category] = []
+        }
+        acc[platform.category].push(platform)
+        return acc
+      },
+      {} as Record<string, Platform[]>,
+    )
+    return grouped
+  }, [filteredPlatforms])
 
-    return grouped;
-  }, [filteredPlatforms]);
-
-  const categoryOrder = ['essential', 'social', 'professional', 'creative'];
+  const categoryOrder = ["essential", "social", "professional", "creative"]
   const categoryLabels = {
-    essential: 'Essential',
-    social: 'Social Media',
-    professional: 'Professional',
-    creative: 'Creative & Content'
-  };
+    essential: "Essential",
+    social: "Social Media",
+    professional: "Professional",
+    creative: "Creative & Content",
+  }
 
   const progressWidth = progressAnim.interpolate({
     inputRange: [0, 3],
-    outputRange: ['0%', '66.66%'],
-  });
+    outputRange: ["0%", "66.66%"],
+  })
 
   const renderPlatformItem = ({ item }: { item: Platform }) => {
-    const isSelected = selectedPlatforms.includes(item.id);
-    
+    const isSelected = selectedPlatforms.some((p) => p.id === item.id)
+    const selectedData = selectedPlatforms.find((p) => p.id === item.id)
+
     return (
       <TouchableOpacity
-        style={[
-          styles.platformItem, 
-          isSelected && styles.platformItemSelected
-        ]}
-        onPress={() => togglePlatform(item.id)}
+        style={[styles.platformItem, isSelected && styles.platformItemSelected]}
+        onPress={() => handlePlatformPress(item)}
         activeOpacity={0.7}
       >
         <View style={styles.platformContent}>
-          <View style={[
-            styles.platformIcon, 
-            { backgroundColor: `${item.color}15` }
-          ]}>
+          <View style={[styles.platformIcon, { backgroundColor: `${item.color}15` }]}>
             <Ionicons name={item.icon as any} size={24} color={item.color} />
           </View>
           <View style={styles.platformInfo}>
-            <Text style={styles.platformName}>{item.name}</Text>
-            {item.placeholder && (
-              <Text style={styles.platformPlaceholder}>{item.placeholder}</Text>
+            <Text style={styles.platformName}>{isSelected && selectedData ? selectedData.name : item.name}</Text>
+            {isSelected && selectedData ? (
+              <Text style={styles.platformValue}>{selectedData.value}</Text>
+            ) : (
+              item.placeholder && <Text style={styles.platformPlaceholder}>{item.placeholder}</Text>
             )}
           </View>
         </View>
         <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-          {isSelected && (
-            <Ionicons name="checkmark" size={16} color="white" />
+          {isSelected ? (
+            <Ionicons name="checkmark" size={16} color="#0F172A" />
+          ) : (
+            <Ionicons name="add" size={16} color="rgba(255, 255, 255, 0.5)" />
           )}
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const renderCategorySection = (category: string) => {
-    const categoryPlatforms = platformsByCategory[category];
-    if (!categoryPlatforms || categoryPlatforms.length === 0) return null;
+    const categoryPlatforms = platformsByCategory[category]
+    if (!categoryPlatforms || categoryPlatforms.length === 0) return null
 
     return (
       <View key={category} style={styles.section}>
-        <Text style={styles.sectionTitle}>
-          {categoryLabels[category as keyof typeof categoryLabels]}
-        </Text>
+        <Text style={styles.sectionTitle}>{categoryLabels[category as keyof typeof categoryLabels]}</Text>
         <FlatList
           data={categoryPlatforms}
           renderItem={renderPlatformItem}
@@ -348,13 +328,13 @@ export default function AddLinksScreen() {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    );
-  };
+    )
+  }
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="dark" backgroundColor="#FAFAFA" />
-      <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" />
+      <LinearGradient colors={["#0F172A", "#1E293B", "#334155"]} style={styles.gradient}>
         <Animated.View
           style={[
             styles.content,
@@ -366,22 +346,14 @@ export default function AddLinksScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={handleGoBack}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={24} color="#111827" />
+            <TouchableOpacity style={styles.backButton} onPress={handleGoBack} activeOpacity={0.7}>
+              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
             </TouchableOpacity>
             <View style={styles.headerCenter}>
               <Text style={styles.headerTitle}>Add Your Links</Text>
               <Text style={styles.headerSubtitle}>Choose platforms to connect</Text>
             </View>
-            <TouchableOpacity
-              style={styles.skipButton}
-              onPress={handleSkip}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={styles.skipButton} onPress={handleSkip} activeOpacity={0.7}>
               <Text style={styles.skipText}>Skip</Text>
             </TouchableOpacity>
           </View>
@@ -391,150 +363,113 @@ export default function AddLinksScreen() {
             <View style={styles.progressHeader}>
               <Text style={styles.progressText}>Step 2 of 3</Text>
               <Text style={styles.selectedCount}>
-                {selectedPlatforms.length} platform{selectedPlatforms.length !== 1 ? 's' : ''} selected
+                {selectedPlatforms.length} platform{selectedPlatforms.length !== 1 ? "s" : ""} added
               </Text>
             </View>
             <View style={styles.progressBarContainer}>
               <View style={styles.progressBarBackground} />
-              <Animated.View
-                style={[
-                  styles.progressBarFill,
-                  { width: progressWidth },
-                ]}
-              />
+              <Animated.View style={[styles.progressBarFill, { width: progressWidth }]} />
             </View>
           </View>
 
           {/* Search Bar */}
           <View style={styles.searchContainer}>
             <View style={styles.searchInputContainer}>
-              <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
+              <Ionicons name="search" size={20} color="#64748B" style={styles.searchIcon} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search platforms..."
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#64748B"
                 returnKeyType="search"
               />
               {searchQuery.length > 0 && (
                 <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-                  <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+                  <Ionicons name="close-circle" size={20} color="#64748B" />
                 </TouchableOpacity>
               )}
             </View>
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={clearSearch} activeOpacity={0.7}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </TouchableOpacity>
-            )}
           </View>
 
           {/* Platforms List */}
-          <ScrollView 
+          <ScrollView
             style={styles.platformsContainer}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.platformsContent}
           >
             {filteredPlatforms.length === 0 ? (
               <View style={styles.noResultsContainer}>
-                <Ionicons name="search" size={48} color="#9CA3AF" />
+                <Ionicons name="search" size={48} color="#64748B" />
                 <Text style={styles.noResultsTitle}>No platforms found</Text>
-                <Text style={styles.noResultsSubtitle}>
-                  Try searching with different keywords
-                </Text>
+                <Text style={styles.noResultsSubtitle}>Try searching with different keywords</Text>
               </View>
             ) : (
-              categoryOrder.map(category => renderCategorySection(category))
-            )}
-            
-            {/* Recommended Section */}
-            {searchQuery === '' && selectedPlatforms.length > 0 && (
-              <View style={styles.recommendedSection}>
-                <Text style={styles.recommendedTitle}>💡 Recommended for you</Text>
-                <Text style={styles.recommendedText}>
-                  Based on your selections, consider adding these platforms to maximize your reach.
-                </Text>
-              </View>
+              categoryOrder.map((category) => renderCategorySection(category))
             )}
           </ScrollView>
 
           {/* Continue Button */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[
-                styles.continueButton,
-                selectedPlatforms.length === 0 && styles.continueButtonDisabled
-              ]}
+              style={[styles.continueButton, selectedPlatforms.length === 0 && styles.continueButtonDisabled]}
               onPress={handleContinue}
               disabled={selectedPlatforms.length === 0 || isLoading}
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={
-                  selectedPlatforms.length > 0 && !isLoading 
-                    ? ['#4F46E5', '#3B82F6'] 
-                    : ['#9CA3AF', '#9CA3AF']
-                }
+                colors={selectedPlatforms.length > 0 && !isLoading ? ["#F59E0B", "#FBBF24"] : ["#64748B", "#64748B"]}
                 style={styles.continueGradient}
               >
                 {isLoading ? (
                   <View style={styles.loadingContainer}>
-                    <Animated.View 
-                      style={[
-                        styles.loadingSpinner,
-                        {
-                          transform: [{
-                            rotate: progressAnim.interpolate({
-                              inputRange: [0, 1],
-                              outputRange: ['0deg', '360deg'],
-                            })
-                          }]
-                        }
-                      ]}
-                    >
-                      <Ionicons name="refresh" size={20} color="white" />
-                    </Animated.View>
                     <Text style={styles.continueButtonText}>Saving...</Text>
                   </View>
                 ) : (
                   <Text style={styles.continueButtonText}>
-                    Continue with {selectedPlatforms.length} platform{selectedPlatforms.length !== 1 ? 's' : ''}
+                    Continue with {selectedPlatforms.length} platform{selectedPlatforms.length !== 1 ? "s" : ""}
                   </Text>
                 )}
               </LinearGradient>
             </TouchableOpacity>
-            
+
             {selectedPlatforms.length === 0 && (
-              <Text style={styles.helperText}>
-                Select at least one platform to continue
-              </Text>
+              <Text style={styles.helperText}>Add at least one platform to continue</Text>
             )}
           </View>
         </Animated.View>
-      </SafeAreaView>
-    </View>
-  );
+
+        {/* Platform Modal */}
+        <PlatformModal
+          visible={modalVisible}
+          platform={selectedPlatform}
+          onClose={handleModalClose}
+          onSave={handleModalSave}
+        />
+      </LinearGradient>
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: "#0F172A",
   },
-  safeArea: {
+  gradient: {
     flex: 1,
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingTop: 10,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    paddingTop: 10,
   },
   backButton: {
     padding: 8,
@@ -542,17 +477,17 @@ const styles = StyleSheet.create({
   },
   headerCenter: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#94A3B8",
   },
   skipButton: {
     padding: 8,
@@ -560,72 +495,60 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#4F46E5',
-    fontWeight: '500',
+    color: "#F59E0B",
+    fontWeight: "500",
   },
   progressContainer: {
-    marginBottom: 30,
+    marginBottom: 20,
   },
   progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   progressText: {
     fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
+    color: "#94A3B8",
+    fontWeight: "500",
   },
   selectedCount: {
     fontSize: 14,
-    color: '#4F46E5',
-    fontWeight: '500',
+    color: "#F59E0B",
+    fontWeight: "500",
   },
   progressBarContainer: {
     height: 4,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 2,
-    position: 'relative',
-    overflow: 'hidden',
+    position: "relative",
+    overflow: "hidden",
   },
   progressBarBackground: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   progressBarFill: {
-    height: '100%',
-    backgroundColor: '#4F46E5',
+    height: "100%",
+    backgroundColor: "#F59E0B",
     borderRadius: 2,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   searchInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    marginRight: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
   searchIcon: {
     marginRight: 12,
@@ -633,15 +556,10 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
+    color: "#FFFFFF",
   },
   clearButton: {
     padding: 4,
-  },
-  cancelText: {
-    fontSize: 16,
-    color: '#4F46E5',
-    fontWeight: '500',
   },
   platformsContainer: {
     flex: 1,
@@ -650,51 +568,41 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   section: {
-    marginBottom: 30,
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 12,
   },
   platformItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    marginBottom: 12,
+    paddingVertical: 14,
+    marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
   platformItemSelected: {
-    borderColor: '#4F46E5',
-    backgroundColor: '#F8FAFF',
-    shadowColor: '#4F46E5',
-    shadowOpacity: 0.1,
+    borderColor: "#F59E0B",
+    backgroundColor: "rgba(245, 158, 11, 0.1)",
   },
   platformContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   platformIcon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
   },
   platformInfo: {
@@ -702,69 +610,55 @@ const styles = StyleSheet.create({
   },
   platformName: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#111827',
+    fontWeight: "500",
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   platformPlaceholder: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: "#64748B",
+  },
+  platformValue: {
+    fontSize: 12,
+    color: "#F59E0B",
+    fontWeight: "500",
   },
   checkbox: {
     width: 24,
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   checkboxSelected: {
-    backgroundColor: '#4F46E5',
-    borderColor: '#4F46E5',
+    backgroundColor: "#F59E0B",
+    borderColor: "#F59E0B",
   },
   noResultsContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 60,
   },
   noResultsTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginTop: 16,
     marginBottom: 8,
   },
   noResultsSubtitle: {
     fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  recommendedSection: {
-    backgroundColor: '#F0F9FF',
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#E0F2FE',
-  },
-  recommendedTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  recommendedText: {
-    fontSize: 14,
-    color: '#6B7280',
-    lineHeight: 20,
+    color: "#94A3B8",
+    textAlign: "center",
   },
   buttonContainer: {
-    paddingTop: 20,
+    paddingTop: 16,
     paddingBottom: 20,
   },
   continueButton: {
     borderRadius: 12,
-    shadowColor: '#4F46E5',
+    shadowColor: "#F59E0B",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -779,28 +673,25 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   continueGradient: {
-    paddingVertical: 16,
+    paddingVertical: 14,
     borderRadius: 12,
-    alignItems: 'center',
-    minHeight: 52,
-    justifyContent: 'center',
+    alignItems: "center",
+    minHeight: 48,
+    justifyContent: "center",
   },
   continueButtonText: {
-    color: 'white',
+    color: "#0F172A",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.5,
   },
   loadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  loadingSpinner: {
-    marginRight: 8,
+    flexDirection: "row",
+    alignItems: "center",
   },
   helperText: {
     fontSize: 14,
-    color: '#9CA3AF',
-    textAlign: 'center',
+    color: "#64748B",
+    textAlign: "center",
   },
-});
+})
